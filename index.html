@@ -4,123 +4,16 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rock Paper Scissor</title>
+    <title>Rock Paper Scissors</title>
 </head>
 <body>
-
+    <div class="btn-container">
+        <button class="btn rock">Rock</button>
+        <button class="btn paper">Paper</button>
+        <button class="btn scissors">Scissors</button>
+    </div>
 
 <script>
-
-/*
-Function to produce a random number between 0, 1, 2 
-and assign those number to either Rock, Paper, Scissors
-*/
-function computerPlay() {
-    let randomNumber = Math.floor(Math.random()*3);
-    if (randomNumber === 0) {
-        result = "Rock";
-    } else if (randomNumber === 1) {
-        result = "Paper";
-    } else {
-        result = "Scissors";
-    }
-    return result ;
-}
-
-/*
-Function to convert the case of userinput so only
-first letter is capitalize
-*/
-
-function convertCase(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-
-/*
-Function that get playerinput and get computer input
-and decide which one is win based on set of rules
-
-GAME RULES:
-Paper vs Rock = Paper
-Rock vs Scissors = Rock
-Scissors vs Paper = Scissors
-Equal = Tie
-*/
-function playRound(playerSelection, computerSelection) {
-    const userInput = convertCase(playerSelection);
-
-    if (userInput === computerSelection){
-        const result = `It's Tie. You chose ${userInput} and Computer chose ${computerSelection}.`;
-        return result;
-        console.log(scoreCount(result));
-        
-    }
-
-    else if (userInput === "Rock" && computerSelection === "Scissors") {
-        const result = `You Win! ${userInput} beats ${computerSelection}`;
-        return result;
-        console.log(scoreCount(result));
-    }
-
-    else if (userInput === "Rock" && computerSelection === "Paper") {
-        const result = `You Lose! ${computerSelection} beats ${userInput}`;
-        return result;
-        console.log(scoreCount(result));
-    }
-
-    else if (userInput === "Paper" && computerSelection === "Rock") {
-        const result = `You Win! ${userInput} beats ${computerSelection}`;
-        return result;
-        console.log(scoreCount(result));
-    }
-
-    else if (userInput === "Paper" && computerSelection === "Scissors") {
-        const result =`You Lose! ${computerSelection} beats ${userInput}`; 
-        return result;
-        console.log(scoreCount(result));
-    }
-
-    else if (userInput === "Scissors" && computerSelection === "Paper") {
-        const result = `You Win! ${userInput} beats ${computerSelection}`;
-        return result;
-        console.log(scoreCount(result));
-    }
-
-    else {const result = `You Lose! ${computerSelection} beats ${userInput}`;
-        return result;
-        console.log(scoreCount(result));     
-    }
-}
-
-
-//Function to count the score of each player
-
-function scoreCount (result){
-
-    if (result.includes("Win")) {
-        userScore++;
-        return `User's Score: ${userScore} and Computer's Score: ${computerScore}`;
-    } else if (result.includes("Lose")) {
-        computerScore++;
-        return `User's Score: ${userScore} and Computer's Score: ${computerScore}`;
-    } else if (result.includes("Tie")) {
-        return `User's Score: ${userScore} and Computer's Score: ${computerScore}`;
-    }
-    
-}
-
-// Play game for 5 times
-function game(){
-    for (let i=0;i<5;i++){
-
-    const playerSelection = prompt("Choose either Rock, Paper, or Scissors: ");
-    console.log(`player: ${playerSelection}`);
-    const computerSelection = computerPlay();
-    console.log(`computer: ${computerSelection}`);
-    console.log(playRound(playerSelection, computerSelection));
-    }
-}
 
 // Initialize variable
 let userScore = 0;
@@ -128,13 +21,191 @@ let computerScore = 0;
 const playerSelection = null;
 const computerSelection = null;
 
-// Execute Game
+
+
+//create variable to select the container
+const container = document.querySelector(".btn-container");
+
+//create variable to select the button element
+const btnRock = document.querySelector(".rock");
+const btnPaper = document.querySelector(".paper");
+const btnScissors = document.querySelector(".scissors");
+
+const score = document.createElement("div")
+
+
+
+// create variable to create new element to be added later
+const content = document.createElement("div");
+const done= document.createElement("div");
+const reset = document.createElement("button");
+
+//to input what computer chose randomly
+function computerPlay() {
+    const choice = "";
+    let randomNumber = Math.floor(Math.random()*3);
+    if (randomNumber === 0) {
+        const choice = "Rock";
+        return choice;
+    } else if (randomNumber === 1) {
+       const choice = "Paper";
+       return choice;
+    } else {
+        const choice = "Scissors";
+        return choice;
+    }   
+}
+
+//function to determine if the game over or not
+function isGameContinue(userScore, computerScore) {
+    if (userScore < 5 && computerScore < 5) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+//determine win or lose
+const status = (userScore, computerScore) => {
+    if (userScore > computerScore){
+        return "Win";
+    } else {return "Lose"}
+}
+
+
+
+
+//function to determine who win and lose based on argument
+function playRound(playerSelection, computerSelection) {
+
+    if (playerSelection === computerSelection){
+        content.textContent = `It's Tie. You chose ${playerSelection} and Computer chose ${computerSelection}.`;
+        container.appendChild(content);
+        score.textContent = `You: ${userScore} COM: ${computerScore}`;
+        container.appendChild(score);
+        const isOk = isGameContinue(userScore,computerScore);
+       
+    }
+
+    else if (playerSelection === "Rock" && computerSelection === "Scissors") {
+        content.textContent = `You Win! ${playerSelection} beats ${computerSelection}.`;
+        container.appendChild(content);
+        userScore += 1;
+        score.textContent = `You: ${userScore} COM: ${computerScore}`;
+        container.appendChild(score);
+        const isOk = isGameContinue(userScore,computerScore);
+        if (isOk === false) {
+            const statusLabel = status(userScore, computerScore);
+            done.textContent = `Game Over. You ${statusLabel}.`;
+            reset.setAttribute("onclick","document.location.reload()");
+            reset.textContent = "Play Again?";
+            container.appendChild(done);
+            container.appendChild(reset);
+        }
+       
+    }
+
+    else if (playerSelection === "Rock" && computerSelection === "Paper") {
+        content.textContent = `You Lose! ${computerSelection} beats ${playerSelection}.`;
+        container.appendChild(content);
+        computerScore += 1;
+        score.textContent = `You: ${userScore} COM: ${computerScore}`;
+        container.appendChild(score);
+        const isOk = isGameContinue(userScore,computerScore);
+        if (isOk === false) {
+            const statusLabel = status(userScore, computerScore);
+            done.textContent = `Game Over. You ${statusLabel}.`;
+            reset.setAttribute("onclick","document.location.reload()")
+            reset.textContent = "Play Again?";
+            container.appendChild(done);
+            container.appendChild(reset);
+        }
+    }
+
+    else if (playerSelection === "Paper" && computerSelection === "Rock") {
+        content.textContent = `You Win! ${playerSelection} beats ${computerSelection}.`;
+        container.appendChild(content);
+        userScore += 1;
+        score.textContent = `You: ${userScore} COM: ${computerScore}`;
+        container.appendChild(score);
+        const isOk = isGameContinue(userScore,computerScore);
+        if (isOk === false) {
+            const statusLabel = status(userScore, computerScore);
+            done.textContent = `Game Over. You ${statusLabel}.`;
+            reset.setAttribute("onclick","document.location.reload()")
+            reset.textContent = "Play Again?";
+            container.appendChild(done);
+            container.appendChild(reset);
+        }
+    }
+
+    else if (playerSelection === "Paper" && computerSelection === "Scissors") {
+        content.textContent = `You Lose! ${computerSelection} beats ${playerSelection}.`;
+        container.appendChild(content);
+        computerScore += 1;
+        score.textContent = `You: ${userScore} COM: ${computerScore}`;
+        container.appendChild(score);
+        const isOk = isGameContinue(userScore,computerScore);
+        if (isOk === false) {
+            const statusLabel = status(userScore, computerScore);
+            done.textContent = `Game Over. You ${statusLabel}.`;
+            reset.setAttribute("onclick","document.location.reload()")
+            reset.textContent = "Play Again?";
+            container.appendChild(done);
+            container.appendChild(reset);
+        }
+    }
+
+    else if (playerSelection === "Scissors" && computerSelection === "Paper") {
+        content.textContent = `You Win! ${playerSelection} beats ${computerSelection}.`;
+        container.appendChild(content);
+        userScore += 1;
+        score.textContent = `You: ${userScore} COM: ${computerScore}`;
+        container.appendChild(score);
+        const isOk = isGameContinue(userScore,computerScore);
+        if (isOk === false) {
+            const statusLabel = status(userScore, computerScore);
+            done.textContent = `Game Over. You ${statusLabel}.`;
+            reset.setAttribute("onclick","document.location.reload()")
+            reset.textContent = "Play Again?";
+            container.appendChild(done);
+            container.appendChild(reset);
+        }
+    }
+
+    else {
+        content.textContent = `You Lose! ${computerSelection} beats ${playerSelection}.`;
+        container.appendChild(content); 
+        computerScore += 1;   
+        score.textContent = `You: ${userScore} COM: ${computerScore}`;
+        container.appendChild(score);
+        const isOk = isGameContinue(userScore,computerScore);
+        if (isOk === false) {
+            const statusLabel = status(userScore, computerScore);
+            done.textContent = `Game Over. You ${statusLabel}.`;
+            reset.setAttribute("onclick","document.location.reload()")
+            reset.textContent = "Play Again?";
+            container.appendChild(done);
+            container.appendChild(reset);
+        }
+    } } 
+
+
+
+
+//add event listener to button
+function game (){
+btnRock.addEventListener("click", function() {
+playRound("Rock", computerPlay());
+});
+btnPaper.addEventListener("click", function() {
+playRound("Paper", computerPlay());
+});
+btnScissors.addEventListener("click", function() {
+playRound("Scissors", computerPlay()); });
+}
+
 game();
-
 </script>
-
-    
 </body>
 </html>
-
-
